@@ -16,7 +16,7 @@ This project uses two components:
 2. **Git Hook** — Runs automatically before `git push` to catch issues
 
 Prerequisites:
-- desloppify CLI: pip install "desloppify[full]"
+- desloppify CLI: uv pip install "desloppify[full]"
 
 Install the git hook (run in the repository root):
   ./scripts/install-hook.sh
