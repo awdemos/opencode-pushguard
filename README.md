@@ -11,16 +11,18 @@ OpenCode plugin that runs [desloppify](https://github.com/peteromallet/desloppif
 ```
 Install opencode-pushguard to prevent sloppy code from being pushed to this repository.
 
-Prerequisites:
-- desloppify CLI installed: pip install "desloppify[full]"
-- Run: desloppify update-skill claude (pick your assistant: claude, cursor, codex, copilot, windsurf, gemini)
+This project uses two components:
+1. **OpenCode Plugin** — Adds desloppify tools to your AI assistant (desloppify_scan, etc.)
+2. **Git Hook** — Runs automatically before `git push` to catch issues
 
-Install the pre-push hook:
+Prerequisites:
+- desloppify CLI: pip install "desloppify[full]"
+
+Install the git hook (run in the repository root):
   ./scripts/install-hook.sh
 
-What opencode-pushguard does:
-- Intercepts git push commands
-- Runs desloppify quality scan
+What happens on push:
+- Hook runs desloppify quality scan
 - Warns or blocks if score < threshold (default: 95)
 
 Configuration:
@@ -31,17 +33,16 @@ Configuration:
 For OpenCode, add to ~/.config/opencode/opencode.json:
   {"plugin": ["opencode-pushguard"]}
 
-Documentation: https://github.com/awdemos/opencode-pushguard
+Docs: https://github.com/awdemos/opencode-pushguard
 ```
 
 ---
 
 ## Features
 
-- **OpenCode Plugin**: Intercepts `git push` commands and runs quality checks
-- **Git Hook**: Optional pre-push hook for any git repository
+- **OpenCode Plugin**: Adds desloppify tools to your AI assistant
+- **Git Hook**: Pre-push hook that warns/blocks on low quality scores
 - **Tools**: `desloppify_scan`, `desloppify_next`, `desloppify_plan`, `desloppify_status`, `desloppify_help`
-
 ## Installation
 
 ### As OpenCode Plugin
@@ -67,18 +68,13 @@ Or install locally:
 Install the pre-push hook in your repository:
 
 ```bash
-# From npm
-npx opencode-pushguard
-
-# Or directly
+# Run from the repository root
 ./scripts/install-hook.sh
-```
 
-**Uninstall:**
+# Or specify a repo path
+./scripts/install-hook.sh --repo /path/to/repo
 
-```bash
-npx opencode-pushguard --uninstall
-# Or
+# Uninstall
 ./scripts/install-hook.sh --uninstall
 ```
 
