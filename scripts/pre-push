@@ -20,7 +20,7 @@ fi
 
 # Check if desloppify is available
 if ! command -v desloppify &>/dev/null; then
-    echo "⚠️  desloppify not found - install with: pip install 'desloppify[full]'"
+    echo "⚠️  desloppify not found - install with: uv pip install 'desloppify[full]'"
     echo "   Skipping quality check..."
     exit 0
 fi

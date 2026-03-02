@@ -86,7 +86,7 @@ export default {
       } catch {
         return { 
           proceed: true,
-          message: "⚠️  desloppify not found - skipping quality check. Install with: pip install 'desloppify[full]'"
+          message: "⚠️  desloppify not found - skipping quality check. Install with: uv pip install 'desloppify[full]'"
         };
       }
       
