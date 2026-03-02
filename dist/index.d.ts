@@ -1,5 +1,5 @@
 /**
- * Pushguard: OpenCode Plugin
+ * opencode-pushguard: OpenCode Plugin
  *
  * Intercepts git push commands and runs desloppify quality checks.
  * Blocks push if quality score is below threshold (configurable).

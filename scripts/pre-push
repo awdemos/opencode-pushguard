@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Pre-push hook: Run desloppify quality check before git push
-# Install: npx pushguard install-hook
+# Install: npx opencode-pushguard install-hook
 # Or manually: ln -sf "$(pwd)/pre-push" .git/hooks/pre-push
 #
 # Environment variables:
@@ -14,7 +14,7 @@ set -euo pipefail
 
 # Skip hook if requested
 if [[ "${DESLOPPIFY_SKIP:-0}" == "1" ]]; then
-    echo "ℹ️  Pushguard skipped (DESLOPPIFY_SKIP=1)"
+    echo "ℹ️  opencode-pushguard skipped (DESLOPPIFY_SKIP=1)"
     exit 0
 fi
 

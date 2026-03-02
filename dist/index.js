@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Pushguard: OpenCode Plugin
+ * opencode-pushguard: OpenCode Plugin
  *
  * Intercepts git push commands and runs desloppify quality checks.
  * Blocks push if quality score is below threshold (configurable).
@@ -32,7 +32,7 @@ ${border}
 }
 // Plugin export
 exports.default = {
-    name: "pushguard",
+    name: "opencode-pushguard",
     hooks: {
         /**
          * Intercept bash tool calls to detect git push
@@ -51,7 +51,7 @@ exports.default = {
             if (DESLOPPIFY_SKIP) {
                 return {
                     proceed: true,
-                    message: "ℹ️  Pushguard skipped (DESLOPPIFY_SKIP=1)"
+                    message: "ℹ️  opencode-pushguard skipped (DESLOPPIFY_SKIP=1)"
                 };
             }
             // Check if desloppify is available
@@ -171,14 +171,14 @@ To bypass (not recommended):
         },
         {
             name: "desloppify_help",
-            description: "Get help and usage instructions for pushguard.",
+            description: "Get help and usage instructions for opencode-pushguard.",
             parameters: {
                 type: "object",
                 properties: {}
             },
             execute: async () => {
                 return {
-                    name: "pushguard",
+                    name: "opencode-pushguard",
                     purpose: "Runs desloppify quality checks before git push",
                     environmentVariables: {
                         DESLOPPIFY_SKIP: { default: "0", description: "Set to '1' to skip the hook entirely" },

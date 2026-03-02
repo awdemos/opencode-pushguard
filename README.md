@@ -1,4 +1,4 @@
-# pushguard
+# opencode-pushguard
 
 OpenCode plugin that runs [desloppify](https://github.com/peteromallet/desloppify) quality checks before `git push`.
 
@@ -8,12 +8,9 @@ OpenCode plugin that runs [desloppify](https://github.com/peteromallet/desloppif
 
 **Copy and paste this prompt into your coding assistant:**
 
-## 🤖 For AI Agents / Coding Assistants
-
-**Copy and paste this prompt into your coding assistant:**
-
 ```
-Install pushguard to prevent sloppy code from being pushed to this repository.
+```
+Install opencode-pushguard to prevent sloppy code from being pushed to this repository.
 
 Prerequisites:
 - desloppify CLI installed: pip install "desloppify[full]"
@@ -22,7 +19,7 @@ Prerequisites:
 Install the pre-push hook:
   ./scripts/install-hook.sh
 
-What pushguard does:
+What opencode-pushguard does:
 - Intercepts git push commands
 - Runs desloppify quality scan
 - Warns or blocks if score < threshold (default: 95)
@@ -33,9 +30,9 @@ Configuration:
   DESLOPPIFY_THRESHOLD=95  # Minimum score
 
 For OpenCode, add to ~/.config/opencode/opencode.json:
-  {"plugin": ["pushguard"]}
+  {"plugin": ["opencode-pushguard"]}
 
-Documentation: https://github.com/awdemos/pushguard
+Documentation: https://github.com/awdemos/opencode-pushguard
 ```
 
 ---
@@ -54,7 +51,7 @@ Add to your `~/.config/opencode/opencode.json`:
 
 ```json
 {
-  "plugin": ["pushguard"]
+  "plugin": ["opencode-pushguard"]
 }
 ```
 
@@ -62,7 +59,7 @@ Or install locally:
 
 ```json
 {
-  "plugin": ["file:///path/to/pushguard"]
+  "plugin": ["file:///path/to/opencode-pushguard"]
 }
 ```
 
@@ -72,7 +69,7 @@ Install the pre-push hook in your repository:
 
 ```bash
 # From npm
-npx pushguard
+npx opencode-pushguard
 
 # Or directly
 ./scripts/install-hook.sh
@@ -81,7 +78,7 @@ npx pushguard
 **Uninstall:**
 
 ```bash
-npx pushguard --uninstall
+npx opencode-pushguard --uninstall
 # Or
 ./scripts/install-hook.sh --uninstall
 ```

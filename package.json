@@ -1,11 +1,11 @@
 {
-  "name": "pushguard",
+  "name": "opencode-pushguard",
   "version": "1.0.0",
   "description": "OpenCode plugin that runs desloppify quality checks before git push",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "pushguard": "./scripts/install-hook.sh"
+    "opencode-pushguard": "./scripts/install-hook.sh"
   },
   "scripts": {
     "build": "tsc",
