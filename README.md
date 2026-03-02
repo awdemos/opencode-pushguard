@@ -10,7 +10,6 @@ OpenCode plugin that runs [desloppify](https://github.com/peteromallet/desloppif
 
 ```
 Install opencode-pushguard to prevent sloppy code from being pushed to this repository.
-Install opencode-pushguard to prevent sloppy code from being pushed to this repository.
 
 Prerequisites:
 - desloppify CLI installed: pip install "desloppify[full]"
