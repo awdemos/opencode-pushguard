@@ -1,0 +1,30 @@
+{
+  "name": "pushguard",
+  "version": "1.0.0",
+  "description": "OpenCode plugin that runs desloppify quality checks before git push",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "pushguard": "./scripts/install-hook.sh"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "prepare": "npm run build",
+    "install-hook": "./scripts/install-hook.sh",
+    "uninstall-hook": "./scripts/install-hook.sh --uninstall"
+  },
+  "files": ["dist/", "scripts/"],
+  "keywords": ["opencode", "plugin", "desloppify", "quality", "git", "pre-push", "hook"],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "desloppify": ">=0.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+#
+# Pre-push hook: Run desloppify quality check before git push
+# Install: npx pushguard install-hook
+# Or manually: ln -sf "$(pwd)/pre-push" .git/hooks/pre-push
+#
+# Environment variables:
+#   DESLOPPIFY_SKIP=1        - Skip this hook entirely
+#   DESLOPPIFY_BLOCK=1       - Block push if score below threshold (default: warn only)
+#   DESLOPPIFY_THRESHOLD=95  - Minimum strict score threshold (default: 95)
+#
+
+set -euo pipefail
+
+# Skip hook if requested
+if [[ "${DESLOPPIFY_SKIP:-0}" == "1" ]]; then
+    echo "ℹ️  Pushguard skipped (DESLOPPIFY_SKIP=1)"
+    exit 0
+fi
+
+# Check if desloppify is available
+if ! command -v desloppify &>/dev/null; then
+    echo "⚠️  desloppify not found - install with: pip install 'desloppify[full]'"
+    echo "   Skipping quality check..."
+    exit 0
+fi
+
+# Configuration
+BLOCK_PUSH="${DESLOPPIFY_BLOCK:-0}"
+THRESHOLD="${DESLOPPIFY_THRESHOLD:-95}"
+
+echo "🔍 Running desloppify quality check..."
+
+# Run desloppify scan
+desloppify scan --path . 2>&1 || true
+
+# Get current strict score from status
+STATUS_OUTPUT=$(desloppify status 2>&1 || echo "")
+SCORE=$(echo "$STATUS_OUTPUT" | grep -oP 'strict\s+\K[\d.]+' | head -1 || echo "0.0")
+OPEN_FINDINGS=$(echo "$STATUS_OUTPUT" | grep -oP 'open\s+\(in-scope\):\s+\K\d+' | head -1 || echo "0")
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  DESLOPPIFY QUALITY REPORT"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  Strict Score:    ${SCORE}"
+echo "  Threshold:       ${THRESHOLD}"
+echo "  Open Findings:   ${OPEN_FINDINGS}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Compare score to threshold
+if (( $(echo "${SCORE:-0} < ${THRESHOLD}" | bc -l 2>/dev/null || echo "0") )); then
+    if [[ "${BLOCK_PUSH}" == "1" ]]; then
+        echo ""
+        echo "❌ PUSH BLOCKED: Score ${SCORE} is below threshold ${THRESHOLD}"
+        echo ""
+        echo "To fix issues, run:"
+        echo "  desloppify next        # Show highest priority issue"
+        echo "  desloppify plan        # View prioritized plan"
+        echo ""
+        echo "To bypass (not recommended):"
+        echo "  DESLOPPIFY_SKIP=1 git push"
+        exit 1
+    else
+        echo ""
+        echo "⚠️  WARNING: Score ${SCORE} is below target ${THRESHOLD}"
+        echo "   Consider running: desloppify next"
+        echo ""
+        echo "   To block pushes below threshold: export DESLOPPIFY_BLOCK=1"
+        echo "   To skip this check: DESLOPPIFY_SKIP=1 git push"
+    fi
+else
+    echo ""
+    echo "✅ Code quality check passed (score: ${SCORE} >= ${THRESHOLD})"
+fi
+
+exit 0
