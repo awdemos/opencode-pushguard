@@ -9,7 +9,7 @@ OpenCode plugin that runs [desloppify](https://github.com/peteromallet/desloppif
 **Copy and paste this prompt into your coding assistant:**
 
 ```
-```
+Install opencode-pushguard to prevent sloppy code from being pushed to this repository.
 Install opencode-pushguard to prevent sloppy code from being pushed to this repository.
 
 Prerequisites:
