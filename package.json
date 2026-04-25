@@ -10,16 +10,29 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "prepare": "npm run build",
     "install-hook": "./scripts/install-hook.sh",
     "uninstall-hook": "./scripts/install-hook.sh --uninstall"
   },
-  "files": ["dist/", "scripts/"],
-  "keywords": ["opencode", "plugin", "desloppify", "quality", "git", "pre-push", "hook"],
+  "files": [
+    "dist/",
+    "scripts/"
+  ],
+  "keywords": [
+    "opencode",
+    "plugin",
+    "desloppify",
+    "quality",
+    "git",
+    "pre-push",
+    "hook"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.13.10",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^4.1.5"
   },
   "peerDependencies": {
     "desloppify": ">=0.1.0"
