@@ -12,7 +12,9 @@ const desloppify_js_1 = require("./desloppify.js");
 // Environment configuration
 const DESLOPPIFY_SKIP = process.env.DESLOPPIFY_SKIP === "1";
 const DESLOPPIFY_BLOCK = process.env.DESLOPPIFY_BLOCK === "1";
-const DESLOPPIFY_THRESHOLD = parseFloat(process.env.DESLOPPIFY_THRESHOLD || "95");
+const rawThreshold = process.env.DESLOPPIFY_THRESHOLD || "95";
+const parsedThreshold = parseFloat(rawThreshold);
+const DESLOPPIFY_THRESHOLD = isNaN(parsedThreshold) ? 95 : Math.max(0, Math.min(100, parsedThreshold));
 /**
  * Format quality report for display
  */
@@ -42,7 +44,7 @@ exports.default = {
             if (toolName !== "bash") {
                 return { proceed: true };
             }
-            const command = args.command || "";
+            const command = typeof args.command === "string" ? args.command : "";
             // Check if this is a git push command
             if (!(0, utils_js_1.isGitPush)(command)) {
                 return { proceed: true };
@@ -56,12 +58,12 @@ exports.default = {
             }
             // Check if desloppify is available
             try {
-                (0, child_process_1.execSync)("which desloppify", { stdio: "ignore" });
+                (0, child_process_1.execFileSync)("desloppify", ["--version"], { stdio: "ignore" });
             }
             catch {
                 return {
                     proceed: true,
-                    message: "⚠️  desloppify not found - skipping quality check. Install with: pip install 'desloppify[full]'"
+                    message: "⚠️  desloppify not found - skipping quality check. Install with: uv pip install 'desloppify[full]'"
                 };
             }
             // Run desloppify scan

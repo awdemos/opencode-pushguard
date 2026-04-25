@@ -5,14 +5,16 @@
  * Blocks push if quality score is below threshold (configurable).
  */
 
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import { isGitPush } from "./utils.js";
 import { runDesloppify, getDesloppifyStatus, getNextIssue, getPlan } from "./desloppify.js";
 
 // Environment configuration
 const DESLOPPIFY_SKIP = process.env.DESLOPPIFY_SKIP === "1";
 const DESLOPPIFY_BLOCK = process.env.DESLOPPIFY_BLOCK === "1";
-const DESLOPPIFY_THRESHOLD = parseFloat(process.env.DESLOPPIFY_THRESHOLD || "95");
+const rawThreshold = process.env.DESLOPPIFY_THRESHOLD || "95";
+const parsedThreshold = parseFloat(rawThreshold);
+const DESLOPPIFY_THRESHOLD = isNaN(parsedThreshold) ? 95 : Math.max(0, Math.min(100, parsedThreshold));
 
 interface ToolArgs {
   command?: string;
@@ -65,7 +67,7 @@ export default {
         return { proceed: true };
       }
       
-      const command = args.command || "";
+      const command = typeof args.command === "string" ? args.command : "";
       
       // Check if this is a git push command
       if (!isGitPush(command)) {
@@ -82,7 +84,7 @@ export default {
       
       // Check if desloppify is available
       try {
-        execSync("which desloppify", { stdio: "ignore" });
+        execFileSync("desloppify", ["--version"], { stdio: "ignore" });
       } catch {
         return { 
           proceed: true,

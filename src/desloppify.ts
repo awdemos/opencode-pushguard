@@ -2,7 +2,7 @@
  * Desloppify CLI wrapper
  */
 
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 interface DesloppifyResult {
   score: number;
@@ -15,12 +15,12 @@ interface DesloppifyResult {
  */
 export function runDesloppify(path: string = "."): DesloppifyResult | null {
   try {
-    execSync(`desloppify scan --path "${path}" 2>&1`, {
+    execFileSync("desloppify", ["scan", "--path", path], {
       encoding: "utf-8",
       timeout: 120000
     });
     
-    const statusOutput = execSync("desloppify status 2>&1", {
+    const statusOutput = execFileSync("desloppify", ["status"], {
       encoding: "utf-8",
       timeout: 30000
     });
@@ -33,9 +33,8 @@ export function runDesloppify(path: string = "."): DesloppifyResult | null {
     
     return { score, findings, raw: statusOutput };
   } catch (error) {
-    const output = (error as { stdout?: string; stderr?: string; message?: string }).stdout || 
-                   (error as { stdout?: string; stderr?: string; message?: string }).stderr || 
-                   (error as { message?: string }).message || "";
+    const err = error as { stdout?: string; stderr?: string; message?: string };
+    const output = err.stdout || err.stderr || err.message || "";
     
     const scoreMatch = output.match(/strict\s+(\d+\.?\d*)\/100/i);
     const score = scoreMatch ? parseFloat(scoreMatch[1]) : 0;
@@ -56,7 +55,7 @@ export function runDesloppify(path: string = "."): DesloppifyResult | null {
  */
 export function getDesloppifyStatus(): Record<string, unknown> {
   try {
-    const output = execSync("desloppify status 2>&1", {
+    const output = execFileSync("desloppify", ["status"], {
       encoding: "utf-8",
       timeout: 30000
     });
@@ -83,12 +82,13 @@ export function getDesloppifyStatus(): Record<string, unknown> {
  */
 export function getNextIssue(): string {
   try {
-    return execSync("desloppify next 2>&1", {
+    return execFileSync("desloppify", ["next"], {
       encoding: "utf-8",
       timeout: 30000
     });
   } catch (error) {
-    const output = (error as { stdout?: string }).stdout || (error as Error).message;
+    const err = error as { stdout?: string; stderr?: string; message?: string };
+    const output = err.stdout || err.stderr || err.message;
     return output || "No issues found or desloppify not available";
   }
 }
@@ -98,12 +98,13 @@ export function getNextIssue(): string {
  */
 export function getPlan(): string {
   try {
-    return execSync("desloppify plan 2>&1", {
+    return execFileSync("desloppify", ["plan"], {
       encoding: "utf-8",
       timeout: 30000
     });
   } catch (error) {
-    const output = (error as { stdout?: string }).stdout || (error as Error).message;
+    const err = error as { stdout?: string; stderr?: string; message?: string };
+    const output = err.stdout || err.stderr || err.message;
     return output || "No plan available or desloppify not available";
   }
 }

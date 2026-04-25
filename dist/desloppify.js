@@ -13,11 +13,11 @@ const child_process_1 = require("child_process");
  */
 function runDesloppify(path = ".") {
     try {
-        (0, child_process_1.execSync)(`desloppify scan --path "${path}" 2>&1`, {
+        (0, child_process_1.execFileSync)("desloppify", ["scan", "--path", path], {
             encoding: "utf-8",
             timeout: 120000
         });
-        const statusOutput = (0, child_process_1.execSync)("desloppify status 2>&1", {
+        const statusOutput = (0, child_process_1.execFileSync)("desloppify", ["status"], {
             encoding: "utf-8",
             timeout: 30000
         });
@@ -28,9 +28,8 @@ function runDesloppify(path = ".") {
         return { score, findings, raw: statusOutput };
     }
     catch (error) {
-        const output = error.stdout ||
-            error.stderr ||
-            error.message || "";
+        const err = error;
+        const output = err.stdout || err.stderr || err.message || "";
         const scoreMatch = output.match(/strict\s+(\d+\.?\d*)\/100/i);
         const score = scoreMatch ? parseFloat(scoreMatch[1]) : 0;
         const findingsMatch = output.match(/open\s+\(in-scope\):\s+(\d+)/i);
@@ -46,7 +45,7 @@ function runDesloppify(path = ".") {
  */
 function getDesloppifyStatus() {
     try {
-        const output = (0, child_process_1.execSync)("desloppify status 2>&1", {
+        const output = (0, child_process_1.execFileSync)("desloppify", ["status"], {
             encoding: "utf-8",
             timeout: 30000
         });
@@ -71,13 +70,14 @@ function getDesloppifyStatus() {
  */
 function getNextIssue() {
     try {
-        return (0, child_process_1.execSync)("desloppify next 2>&1", {
+        return (0, child_process_1.execFileSync)("desloppify", ["next"], {
             encoding: "utf-8",
             timeout: 30000
         });
     }
     catch (error) {
-        const output = error.stdout || error.message;
+        const err = error;
+        const output = err.stdout || err.stderr || err.message;
         return output || "No issues found or desloppify not available";
     }
 }
@@ -86,13 +86,14 @@ function getNextIssue() {
  */
 function getPlan() {
     try {
-        return (0, child_process_1.execSync)("desloppify plan 2>&1", {
+        return (0, child_process_1.execFileSync)("desloppify", ["plan"], {
             encoding: "utf-8",
             timeout: 30000
         });
     }
     catch (error) {
-        const output = error.stdout || error.message;
+        const err = error;
+        const output = err.stdout || err.stderr || err.message;
         return output || "No plan available or desloppify not available";
     }
 }

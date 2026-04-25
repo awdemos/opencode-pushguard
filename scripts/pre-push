@@ -29,6 +29,11 @@ fi
 BLOCK_PUSH="${DESLOPPIFY_BLOCK:-0}"
 THRESHOLD="${DESLOPPIFY_THRESHOLD:-95}"
 
+# Validate threshold is numeric
+if ! [[ "$THRESHOLD" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+    THRESHOLD=95
+fi
+
 echo "🔍 Running desloppify quality check..."
 
 # Run desloppify scan
@@ -36,8 +41,8 @@ desloppify scan --path . 2>&1 || true
 
 # Get current strict score from status
 STATUS_OUTPUT=$(desloppify status 2>&1 || echo "")
-SCORE=$(echo "$STATUS_OUTPUT" | grep -oP 'strict\s+\K[\d.]+' | head -1 || echo "0.0")
-OPEN_FINDINGS=$(echo "$STATUS_OUTPUT" | grep -oP 'open\s+\(in-scope\):\s+\K\d+' | head -1 || echo "0")
+SCORE=$(echo "$STATUS_OUTPUT" | grep -oiE 'strict[[:space:]]+[0-9]+(\.[0-9]+)?' | grep -oE '[0-9]+(\.[0-9]+)?$' | head -1 || echo "0.0")
+OPEN_FINDINGS=$(echo "$STATUS_OUTPUT" | grep -oiE 'open \(in-scope\):[[:space:]]+[0-9]+' | grep -oE '[0-9]+$' | head -1 || echo "0")
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -49,7 +54,7 @@ echo "  Open Findings:   ${OPEN_FINDINGS}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Compare score to threshold
-if (( $(echo "${SCORE:-0} < ${THRESHOLD}" | bc -l 2>/dev/null || echo "0") )); then
+if awk -v score="${SCORE:-0}" -v thresh="$THRESHOLD" 'BEGIN { if (score < thresh) exit 0; else exit 1 }'; then
     if [[ "${BLOCK_PUSH}" == "1" ]]; then
         echo ""
         echo "❌ PUSH BLOCKED: Score ${SCORE} is below threshold ${THRESHOLD}"

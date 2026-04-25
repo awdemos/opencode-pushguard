@@ -21,7 +21,7 @@ export function isGitPush(command: string): boolean {
   if (normalized.includes("desloppify_skip")) return false;
   
   // Pattern: git push (with optional path prefix and arguments)
-  const gitPushPattern = /(^|\s|\/)(git|git\.exe)\s+push(\s|$|--)/i;
+  const gitPushPattern = /(^|\s|\/)(git|git\.exe)\s+push(\s|$)/i;
   
   return gitPushPattern.test(normalized);
 }
@@ -33,12 +33,15 @@ export function parseGitPushCommand(command: string): { remote?: string; branch?
   if (!isGitPush(command)) return null;
   
   const parts = command.trim().split(/\s+/);
-  const pushIndex = parts.findIndex(p => p === "push");
+  const pushIndex = parts.findIndex(p => p.toLowerCase() === "push");
   
   if (pushIndex === -1) return {};
   
   const args = parts.slice(pushIndex + 1);
-  const nonFlagArgs = args.filter(a => !a.startsWith("-"));
+  const separatorIndex = args.findIndex(a => a === "--");
+  const beforeDash = separatorIndex === -1 ? args : args.slice(0, separatorIndex);
+  const afterDash = separatorIndex === -1 ? [] : args.slice(separatorIndex + 1);
+  const nonFlagArgs = beforeDash.filter(a => !a.startsWith("-")).concat(afterDash);
   
   return {
     remote: nonFlagArgs[0],
