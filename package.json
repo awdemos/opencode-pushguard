@@ -8,7 +8,7 @@
     "opencode-pushguard": "./scripts/install-hook.sh"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "prepare": "npm run build",
